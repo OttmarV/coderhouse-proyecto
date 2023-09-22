@@ -79,14 +79,27 @@ class TwelveData:
         df = pd.DataFrame()
 
         for stock, details in data.items():
-            df_temp = pd.DataFrame(details["values"])
+            df_temp = pd.json_normalize(
+                details,
+                record_path=["values"],
+                meta=[
+                    ["meta", "symbol"],
+                    ["meta", "currency"],
+                    ["meta", "exchange_timezone"],
+                    ["meta", "exchange"],
+                    ["meta", "mic_code"],
+                    ["meta", "type"],
+                ],
+            )
 
-            df_temp["symbol"] = details["meta"]["symbol"]
-            df_temp["currency"] = details["meta"]["currency"]
-            df_temp["exchange_timezone"] = details["meta"]["exchange_timezone"]
-            df_temp["exchange"] = details["meta"]["exchange"]
-            df_temp["mic_code"] = details["meta"]["mic_code"]
-            df_temp["type"] = details["meta"]["type"]
+            df_temp.rename(
+                columns={
+                    old_name: old_name.split(".")[1]
+                    for old_name in df_temp.columns
+                    if old_name.startswith("meta")
+                },
+                inplace=True,
+            )
 
             df = pd.concat([df, df_temp])
 
