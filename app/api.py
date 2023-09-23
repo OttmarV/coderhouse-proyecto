@@ -53,14 +53,12 @@ class TwelveData:
     ) -> dict:
         """Retrieve exchange data per day for the provided stock in a date range"""
 
-        api_url = (
-            "{0}symbol={1}&interval=1day&start_date={2}&end_date={3}&apikey={4}".format(
-                self.api_base_url,
-                (",").join(symbols),
-                start_date,
-                end_date,
-                self.__api_key,
-            )
+        api_url = "{0}symbol={1}&interval=1day&start_date={2}&end_date={3}&dp=2&apikey={4}".format(
+            self.api_base_url,
+            (",").join(symbols),
+            start_date,
+            end_date,
+            self.__api_key,
         )
 
         return self.__request(api_url)
@@ -69,6 +67,11 @@ class TwelveData:
         api_url = "https://api.twelvedata.com/api_usage?apikey={0}".format(
             self.__api_key
         )
+
+        return self.__request(api_url)
+
+    def get_stocks(self):
+        api_url = "https://api.twelvedata.com/stocks?apikey={0}".format(self.__api_key)
 
         return self.__request(api_url)
 
