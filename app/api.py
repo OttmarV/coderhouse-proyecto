@@ -65,6 +65,13 @@ class TwelveData:
 
         return self.__request(api_url)
 
+    def get_api_usage(self):
+        api_url = "https://api.twelvedata.com/api_usage?apikey={0}".format(
+            self.__api_key
+        )
+
+        return self.__request(api_url)
+
     def write_json(self, data: Dict[str, str]) -> None:
         """Writes a json file with the provided dictionary"""
         with open("exchange_data.json", "w", encoding="utf-8") as file:
