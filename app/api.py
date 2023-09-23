@@ -1,4 +1,6 @@
+import sys
 import json
+import logging
 import requests
 import pandas as pd
 from typing import Dict, List
@@ -16,6 +18,7 @@ class TwelveData:
         self.api_base_url = self.__API_URL_BASE
         self.__api_key = api_key
         self.request_timeout = 120
+        self.logger = logging.getLogger("stock_app")
 
         self.session = requests.Session()
         retries = Retry(
@@ -24,7 +27,6 @@ class TwelveData:
         self.session.mount("https://", HTTPAdapter(max_retries=retries))
 
     def __request(self, url):
-        # print(url)
         try:
             response = self.session.get(url, timeout=self.request_timeout)
         except requests.exceptions.RequestException:
@@ -45,6 +47,38 @@ class TwelveData:
 
             raise
 
+    def __extraction_error_handler(self, data: dict):
+        faulted_stocks = []
+        for stock, details in data.items():
+            try:
+                if details["status"] == "error":
+                    code = details["code"]
+                    message = details["message"]
+                    self.logger.info(
+                        f"Extraction error for Stock Symbol {stock}\n \
+                            Error Code: {code}\n \
+                            Error Message: {message}\n \
+                            Removing faulted stock from json extraction"
+                    )
+                    faulted_stocks.append(stock)
+            except TypeError:
+                stock = data["meta"]["symbol"]
+                code = data["code"]
+                message = data["message"]
+                self.logger.info(
+                    f"Extraction error for Stock Symbol {stock}\n \
+                            Error Code: {code}\n \
+                            Error Message: {message}\n \
+                            Removing faulted stock from json extraction"
+                )
+                return {}
+
+        if faulted_stocks:
+            for faulted_stock in faulted_stocks:
+                del data[faulted_stock]
+
+        return data
+
     def get_exchange_data(
         self,
         symbols: List[str],
@@ -61,7 +95,17 @@ class TwelveData:
             self.__api_key,
         )
 
-        return self.__request(api_url)
+        json_extraction = self.__request(api_url)
+        clean_json_extraction = self.__extraction_error_handler(json_extraction)
+
+        if clean_json_extraction:
+            stock_extracted = (", ").join(clean_json_extraction.keys())
+            self.logger.info(
+                f"Data extracted successfully for stock(s): {stock_extracted}\n"
+            )
+            return clean_json_extraction
+
+        sys.exit("No data to load, ending job")
 
     def get_api_usage(self):
         api_url = "https://api.twelvedata.com/api_usage?apikey={0}".format(

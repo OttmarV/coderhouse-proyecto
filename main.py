@@ -16,7 +16,7 @@ if __name__ == "__main__":
         level=logging.INFO,
         datefmt="%Y-%m-%d %H:%M:%S",
     )
-    logger = logging.getLogger()
+    logger = logging.getLogger("stock_app")
 
     # Initialize stock exchange object
     logger.info("Starting program\n")
@@ -25,7 +25,7 @@ if __name__ == "__main__":
 
     # Get exchange data for the stock and date range requested
     logger.info(
-        "Getting 2020 data from TwelveData API for %s stock\n", (", ").join(stock)
+        "Getting 2020 data from TwelveData API for %s stock(s)\n", (", ").join(stock)
     )
     exchange_data = td.get_exchange_data(stock, "2020-01-01", "2020-12-31")
 
@@ -46,11 +46,11 @@ if __name__ == "__main__":
     conn = open_redshift_connection()
 
     # Drop landing table if exists
-    logger.info("Dropping landing table\n Executing query: %s\n", landing_table_drop)
+    logger.info("Dropping landing table\n%s\n", landing_table_drop)
     execute_query(conn, landing_table_drop)
 
     # Create landing table
-    logger.info("Creating landing table\n Executing query: %s\n", landing_table_create)
+    logger.info("Creating landing table\n%s\n", landing_table_create)
     execute_query(conn, landing_table_create)
 
     # Close redshift connection
