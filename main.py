@@ -21,7 +21,7 @@ if __name__ == "__main__":
     # Initialize stock exchange object
     logger.info("Starting program\n")
     td = TwelveData(TWELVE_DATA_API_KEY)
-    stock = ["AAPL", "QQQ", "ABML", "IXIC", "VFIAX"]
+    stock = ["AAPL", "AMZN", "DIS", "ASR"]
 
     # Get exchange data for the stock and date range requested
     logger.info(
