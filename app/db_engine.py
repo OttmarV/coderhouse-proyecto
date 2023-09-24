@@ -1,4 +1,5 @@
 import redshift_connector
+import awswrangler as wr
 from app.credentials import CREDS_REDSHIFT
 
 
@@ -10,6 +11,8 @@ def open_redshift_connection():
         user=CREDS_REDSHIFT["USER"],
         password=CREDS_REDSHIFT["PASSWORD"],
     )
+
+    conn.autocommit = True
 
     return conn
 
@@ -26,3 +29,15 @@ def execute_query(conn, query, values: bool = False):
 
 def close_redshift_connection(conn):
     conn.close()
+
+
+def upsert_records(conn, df):
+    wr.redshift.to_sql(
+        df=df,
+        con=conn,
+        schema="ottmarfvv_coderhouse",
+        table="landing_stock_exchange",
+        mode="upsert",
+        primary_keys=["datetime", "symbol"],
+        use_column_names=True,
+    )

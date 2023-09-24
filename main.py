@@ -7,6 +7,7 @@ from app.db_engine import (
     open_redshift_connection,
     execute_query,
     close_redshift_connection,
+    upsert_records,
 )
 
 
@@ -21,7 +22,7 @@ if __name__ == "__main__":
     # Initialize stock exchange object
     logger.info("Starting program\n")
     td = TwelveData(TWELVE_DATA_API_KEY)
-    stock = ["AAPL", "AMZN", "DIS", "ASR"]
+    stock = ["AAPL", "AMZN", "DIS"]  # "ASR"
 
     # Get exchange data for the stock and date range requested
     logger.info(
@@ -46,12 +47,15 @@ if __name__ == "__main__":
     conn = open_redshift_connection()
 
     # Drop landing table if exists
-    logger.info("Dropping landing table\n%s\n", landing_table_drop)
-    execute_query(conn, landing_table_drop)
+    # logger.info("Dropping landing table\n%s\n", landing_table_drop)
+    # execute_query(conn, landing_table_drop)
 
     # Create landing table
     logger.info("Creating landing table\n%s\n", landing_table_create)
     execute_query(conn, landing_table_create)
+
+    logger.info("Upserting landing table with dataframe data\n")
+    upsert_records(conn, df_exchange_data)
 
     # Close redshift connection
     logger.info("Closing redshift connection\n")

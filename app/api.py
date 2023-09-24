@@ -3,12 +3,13 @@ import json
 import logging
 import requests
 import pandas as pd
+from datetime import timezone
 from typing import Dict, List
 from datetime import datetime
 from requests.adapters import HTTPAdapter, Retry
 
 # Global variable
-NOW = datetime.now()
+NOW = datetime.now(tz=timezone.utc)
 
 
 class TwelveData:
@@ -131,6 +132,9 @@ class TwelveData:
 
     def as_pandas(self, data: dict):
         df = pd.DataFrame()
+        amount_columns = ["open", "close", "high", "low"]
+        amount_prefix = "price_"
+        meta_prefix = "meta"
 
         for stock, details in data.items():
             df_temp = pd.json_normalize(
@@ -146,16 +150,25 @@ class TwelveData:
                 ],
             )
 
-            df_temp.rename(
-                columns={
-                    old_name: old_name.split(".")[1]
-                    for old_name in df_temp.columns
-                    if old_name.startswith("meta")
-                },
-                inplace=True,
-            )
-
             df = pd.concat([df, df_temp])
+
+        df.rename(
+            columns={
+                old_name: old_name.split(".")[1]
+                for old_name in df.columns
+                if old_name.startswith(meta_prefix)
+            },
+            inplace=True,
+        )
+
+        df.rename(
+            columns={
+                old_name: amount_prefix + old_name
+                for old_name in df.columns
+                if old_name in amount_columns
+            },
+            inplace=True,
+        )
 
         df["extraction_date_utc"] = NOW
         df.reset_index(inplace=True, drop=True)
