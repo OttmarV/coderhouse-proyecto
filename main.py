@@ -32,7 +32,11 @@ if __name__ == "__main__":
 
     # Create a pandas dataframe out of the extracted data
     logger.info("Create a pandas DataFrame from data extracted\n")
-    df_exchange_data = td.as_pandas(exchange_data)
+    df = td.as_pandas(exchange_data)
+
+    # Remove duplicates by primary keys
+    logger.info("Removing duplicates by primary keys\n")
+    df = td.remove_duplicates(df)
 
     # Write exchange data into a json file
     logger.info("Creating json file from data extracted\n")
@@ -55,7 +59,7 @@ if __name__ == "__main__":
     execute_query(conn, landing_table_create)
 
     logger.info("Upserting landing table with dataframe data\n")
-    upsert_records(conn, df_exchange_data)
+    upsert_records(conn, df)
 
     # Close redshift connection
     logger.info("Closing redshift connection\n")

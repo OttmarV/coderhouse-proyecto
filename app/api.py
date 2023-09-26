@@ -174,3 +174,10 @@ class TwelveData:
         df.reset_index(inplace=True, drop=True)
 
         return df
+
+    def remove_duplicates(self, df: pd.DataFrame):
+        df = df.drop_duplicates(subset=["datetime", "symbol"], keep="last").reset_index(
+            drop=True
+        )
+
+        return df
