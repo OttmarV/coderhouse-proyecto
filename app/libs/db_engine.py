@@ -1,6 +1,6 @@
 import redshift_connector
 import awswrangler as wr
-from app.credentials import CREDS_REDSHIFT
+from credentials import CREDS_REDSHIFT
 
 
 def open_redshift_connection():

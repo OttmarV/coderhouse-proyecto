@@ -1,6 +1,12 @@
 # Created by https://www.toptal.com/developers/gitignore/api/windows,macos,linux,visualstudiocode,images
 # Edit at https://www.toptal.com/developers/gitignore?templates=windows,macos,linux,visualstudiocode,images
 
+### Airflow logs
+logs/
+
+### Json data extracted
+exchange_data.json
+
 ### Credentials
 credentials.py
 

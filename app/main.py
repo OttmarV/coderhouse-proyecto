@@ -1,9 +1,9 @@
 import logging
 
-from app.api import TwelveData
-from app.credentials import TWELVE_DATA_API_KEY
-from app.sql_queries import landing_table_create, landing_table_drop
-from app.db_engine import (
+from libs.api import TwelveData
+from credentials import TWELVE_DATA_API_KEY
+from libs.sql_queries import landing_table_create, landing_table_drop
+from libs.db_engine import (
     open_redshift_connection,
     execute_query,
     close_redshift_connection,
@@ -11,7 +11,7 @@ from app.db_engine import (
 )
 
 
-if __name__ == "__main__":
+def main():
     logging.basicConfig(
         format="%(asctime)s %(levelname)-8s %(message)s",
         level=logging.INFO,
@@ -66,3 +66,7 @@ if __name__ == "__main__":
     close_redshift_connection(conn)
 
     logger.info("End of script\n")
+
+
+if __name__ == "__main__":
+    main()
