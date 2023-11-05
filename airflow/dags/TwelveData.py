@@ -1,3 +1,4 @@
+from src.main import main
 from datetime import datetime, timedelta
 
 from airflow import DAG
@@ -19,24 +20,25 @@ WKF_TAGS = ["coderhouse", "TwelveData", "TerceraEntrega"]
 with DAG(
     dag_id=WKF_NAME,
     description=WKF_DESCRIPTION,
-    schedule_interval="0 10 * * *",
+    schedule_interval="@daily",
     default_args=default_args,
     tags=WKF_TAGS,
     start_date=datetime(2023, 10, 22, 0),
+    catchup=False,
 ) as dag:
     # Defaults Tasks:
     start_dag = DummyOperator(task_id="start_dag")
     end_dag = DummyOperator(task_id="end_dag")
 
-    twelveData = BashOperator(
-        task_id="twelve_data_etl",
-        bash_command="python /src/main.py",
-    )
-
-    # twelveData = PythonOperator(
+    # twelveData = BashOperator(
     #     task_id="twelve_data_etl",
-    #     python_callable=,
+    #     bash_command="python /src/main.py",
     # )
+
+    twelveData = PythonOperator(
+        task_id="twelve_data_etl",
+        python_callable=main,
+    )
 
     twelveData
 
