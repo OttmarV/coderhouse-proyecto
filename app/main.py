@@ -39,12 +39,12 @@ def main():
     df = td.remove_duplicates(df)
 
     # Write exchange data into a json file
-    logger.info("Creating json file from data extracted\n")
-    td.write_json(exchange_data)
+    # logger.info("Creating json file from data extracted\n")
+    # td.write_json(exchange_data)
 
     # Parse a json file into a python dictionary
-    logger.info("Reading json file into a python dictionary\n")
-    json_exchange_data = td.read_json("exchange_data.json")
+    # logger.info("Reading json file into a python dictionary\n")
+    # json_exchange_data = td.read_json("exchange_data.json")
 
     # Create connection to Redshift
     logger.info("Opening a redshift connection\n")
