@@ -1,4 +1,4 @@
-from src.main import main
+# from src.main import main
 from datetime import datetime, timedelta
 
 from airflow import DAG
@@ -30,15 +30,15 @@ with DAG(
     start_dag = DummyOperator(task_id="start_dag")
     end_dag = DummyOperator(task_id="end_dag")
 
-    # twelveData = BashOperator(
-    #     task_id="twelve_data_etl",
-    #     bash_command="python /src/main.py",
-    # )
-
-    twelveData = PythonOperator(
+    twelveData = BashOperator(
         task_id="twelve_data_etl",
-        python_callable=main,
+        bash_command="python /src/main.py",
     )
+
+    # twelveData = PythonOperator(
+    #     task_id="twelve_data_etl",
+    #     python_callable=main,
+    # )
 
     twelveData
 
