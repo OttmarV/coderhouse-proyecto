@@ -1,8 +1,8 @@
 {
-  "python.formatting.provider": "black",
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  },
   "editor.formatOnSave": true,
-  "python.linting.enabled": true,
-  "python.linting.pylintEnabled": true,
   "yaml.customTags": [
     "!And",
     "!And sequence",
