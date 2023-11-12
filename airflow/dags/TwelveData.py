@@ -9,7 +9,7 @@ from airflow.providers.amazon.aws.operators.redshift_sql import RedshiftSQLOpera
 
 default_args = {
     "owner": "OttmarV",
-    "retries": 1,
+    "retries": 0,
     "retry_delay": timedelta(minutes=1),
     "conn_id": "redshift_default",
 }
@@ -40,9 +40,26 @@ with DAG(
     )
 
     # For amazon provider version 7.4.1
-    avgThreshold = RedshiftSQLOperator(
+    avgThresholdCheck = RedshiftSQLOperator(
         task_id="compute_threshold",
         sql="avg_threshold.sql",
+        wait_for_downstream=True,
+        show_return_value_in_logs=True,
     )
 
-    start_dag >> twelveData >> avgThreshold >> end_dag
+    def process_sql_result(**kwargs):
+        ti = kwargs["ti"]
+        sql_result = ti.xcom_pull(task_ids="compute_threshold")
+
+        print(f"kwargs: {kwargs}")
+        print(f"ti: {ti}")
+        print(f"sql_result: {sql_result}")
+
+    process_sql = PythonOperator(
+        task_id="process_sql",
+        python_callable=process_sql_result,
+        provide_context=True,
+        wait_for_downstream=True,
+    )
+
+    start_dag >> twelveData >> avgThresholdCheck >> process_sql >> end_dag
