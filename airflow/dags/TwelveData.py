@@ -1,7 +1,9 @@
 from datetime import datetime, timedelta
 
 from airflow import DAG
+from airflow.decorators import task
 from airflow.operators.bash import BashOperator
+from airflow.operators.python import PythonOperator
 from airflow.operators.dummy_operator import DummyOperator
 from airflow.providers.amazon.aws.operators.redshift_sql import RedshiftSQLOperator
 
@@ -25,6 +27,7 @@ with DAG(
     start_date=datetime(2023, 10, 22, 0),
     template_searchpath=["/src/libs"],
     catchup=False,
+    params={"stock": "AMZN", "start_date": "2020-01-01", "end_date": "2020-12-31"},
 ) as dag:
     # Defaults Tasks:
     start_dag = DummyOperator(task_id="start_dag")
@@ -35,15 +38,11 @@ with DAG(
         bash_command="python /src/main.py",
     )
 
-    stock = "AMZN"
-    start_date = "2020-01-01"
-    end_date = "2020-12-31"
-
     # For amazon provider version 7.4.1
     avgThreshold = RedshiftSQLOperator(
-        task_id="assses_threshold",
+        task_id="compute_threshold",
         sql="avg_threshold.sql",
-        params={"stock": stock, "start_date": start_date, "end_date": end_date},
+        redshift_conn_id="redshift_default",
     )
 
     start_dag >> twelveData >> avgThreshold >> end_dag
