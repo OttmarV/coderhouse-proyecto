@@ -1,15 +1,21 @@
+import os
 import redshift_connector
 import awswrangler as wr
-from credentials import CREDS_REDSHIFT
+
+CREDS_REDSHIFT_HOST = os.environ.get("CREDS_REDSHIFT_HOST")
+CREDS_REDSHIFT_DATABASE = os.environ.get("CREDS_REDSHIFT_DATABASE")
+CREDS_REDSHIFT_PORT = int(os.environ.get("CREDS_REDSHIFT_PORT"))
+CREDS_REDSHIFT_USER = os.environ.get("CREDS_REDSHIFT_USER")
+CREDS_REDSHIFT_PASSWORD = os.environ.get("CREDS_REDSHIFT_PASSWORD")
 
 
 def open_redshift_connection():
     conn = redshift_connector.connect(
-        host=CREDS_REDSHIFT["HOST"],
-        database=CREDS_REDSHIFT["DATABASE"],
-        port=CREDS_REDSHIFT["PORT"],
-        user=CREDS_REDSHIFT["USER"],
-        password=CREDS_REDSHIFT["PASSWORD"],
+        host=CREDS_REDSHIFT_HOST,
+        database=CREDS_REDSHIFT_DATABASE,
+        port=CREDS_REDSHIFT_PORT,
+        user=CREDS_REDSHIFT_USER,
+        password=CREDS_REDSHIFT_PASSWORD,
     )
 
     conn.autocommit = True

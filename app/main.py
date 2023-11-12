@@ -1,7 +1,7 @@
+import os
 import logging
 
 from libs.api import TwelveData
-from credentials import TWELVE_DATA_API_KEY
 from libs.sql_queries import landing_table_create, landing_table_drop
 from libs.db_engine import (
     open_redshift_connection,
@@ -9,6 +9,8 @@ from libs.db_engine import (
     close_redshift_connection,
     upsert_records,
 )
+
+TWELVE_DATA_API_KEY = os.environ.get("TWELVE_DATA_API_KEY")
 
 
 def main():
