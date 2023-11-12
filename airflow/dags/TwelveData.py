@@ -11,6 +11,7 @@ default_args = {
     "owner": "OttmarV",
     "retries": 1,
     "retry_delay": timedelta(minutes=1),
+    "conn_id": "redshift_default",
 }
 
 # DAG Properties
@@ -42,7 +43,6 @@ with DAG(
     avgThreshold = RedshiftSQLOperator(
         task_id="compute_threshold",
         sql="avg_threshold.sql",
-        redshift_conn_id="redshift_default",
     )
 
     start_dag >> twelveData >> avgThreshold >> end_dag
