@@ -7,10 +7,13 @@ from airflow.models import Variable
 
 def process_sql_result(**kwargs):
     ti = kwargs["ti"]
-    sql_result = ti.xcom_pull(task_ids="compute_threshold")[0][0]
+    params = kwargs["params"]
+    sql_result = float(ti.xcom_pull(task_ids="compute_threshold")[0][0])
+    th_min = float(params.get("th_min"))
+    th_max = float(params.get("th_max"))
     ti.xcom_push(key="threshold_value", value=sql_result)
 
-    if float(sql_result) < 130 or float(sql_result) > 150:
+    if sql_result < th_min or sql_result > th_max:
         return "send_email"
     return "end_dag"
 

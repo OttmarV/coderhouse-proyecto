@@ -30,7 +30,13 @@ with DAG(
     start_date=datetime(2023, 10, 22, 0),
     template_searchpath=["/src/libs"],
     catchup=False,
-    params={"stock": "AMZN", "start_date": "2020-01-01", "end_date": "2020-12-31"},
+    params={
+        "stock": "AMZN",
+        "start_date": "2020-01-01",
+        "end_date": "2020-12-31",
+        "th_min": 130,
+        "th_max": 150,
+    },
 ) as dag:
     # Defaults Tasks:
     start_dag = DummyOperator(task_id="start_dag")
