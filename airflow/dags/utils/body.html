@@ -1,0 +1,100 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Really Simple HTML Email Template</title>
+</head>
+
+<body bgcolor="#f6f6f6">
+
+    <!-- body -->
+    <table class="body-wrap">
+        <tr>
+            <td></td>
+            <td class="container" bgcolor="#FFFFFF">
+                <div class="content">
+                    <table>
+                        <tr>
+                            <td class="center">
+                                <div class="logo">
+                                    <img src="airflow.png">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <h1>
+                                    <center>THRESHOLD ALERT</center>
+                                </h1>
+                                <h2>
+                                    <center></center>
+                                    <FONT COLOR="RED">{query_result}</FONT>
+                                    </center>
+                                </h2>
+                                <ul>
+                                    <li><strong>Stock: <FONT COLOR="BLUE">{stock}</FONT></strong></li>
+                                    <li><strong>Min Avg Price: <FONT COLOR="BLUE">{th_min}</FONT></strong></li>
+                                    <li><strong>Max Avg Price: <FONT COLOR="BLUE">{th_max}</FONT></strong></li>
+                                    <li><strong>Date Range: <FONT COLOR="BLUE">{start_date}</FONT> - <FONT COLOR="BLUE">
+                                                {end_date}</FONT></strong>
+                                    </li>
+                                </ul>
+                                </p>
+                                <table>
+                                    <tr>
+                                        <td class="padding center">
+                                            <p><a href="https://github.com/OttmarV/coderhouse-proyecto"
+                                                    class="btn-primary">Check repo to help owner do something</a></p>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <p>Thanks,<br><strong>Ottmar Vargas</strong><br> Coderhouse-Project</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <p class="footnote">For more features, contact owner</p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <!-- /content -->
+
+            </td>
+            <td></td>
+        </tr>
+    </table>
+    <!-- /body -->
+
+    <!-- footer -->
+    <table class="footer-wrap">
+        <tr>
+            <td></td>
+            <td class="container">
+
+                <!-- content -->
+                <div class="content">
+                    <table>
+                        <tr>
+                            <td align="center">
+                                <p>Don't like these annoying emails? <a href="#">
+                                        <unsubscribe>Unsubscribe</unsubscribe>
+                                    </a>.
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+                </div><!-- /content -->
+
+            </td>
+            <td></td>
+        </tr>
+    </table>
+    <!-- /footer -->
+
+</body>
+
+</html>

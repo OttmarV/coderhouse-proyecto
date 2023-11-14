@@ -23,7 +23,19 @@ def send_email_smtp(ti, **kwargs):
     params = kwargs["params"]
     stock = params.get("stock")
     start_date = params.get("start_date")
+    th_min = params.get("th_min")
+    th_max = params.get("th_max")
     end_date = params.get("end_date")
+
+    with open("/opt/airflow/dags/utils/body.html", "r") as file:
+        html = file.read().format(
+            query_result=query_result,
+            stock=stock,
+            th_min=th_min,
+            th_max=th_max,
+            start_date=start_date,
+            end_date=end_date,
+        )
 
     smtp_server = "smtp.office365.com"
     smtp_port = 587
@@ -33,9 +45,7 @@ def send_email_smtp(ti, **kwargs):
     msg["Subject"] = "CODERHOUSE DAG TWELVE DATA THRESHOLD FAILURE"
     msg.attach(
         MIMEText(
-            f"""<b><h1> Average value outside threshold limits for {stock} in date range {start_date} to {end_date} </h1></b>
-            <b><h2> Vaule: {query_result} </h2></b>
-            """,
+            html,
             "html",
         )
     )

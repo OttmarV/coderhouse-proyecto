@@ -43,6 +43,7 @@ credentials.py
 
 # Portable Network Graphics
 *.png
+!airflow.png
 
 # Animated Portable Network Graphics
 *.apng
