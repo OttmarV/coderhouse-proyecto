@@ -13,6 +13,7 @@
  - **Tag V1.1** Segundo entregable: Script de primera entrega con carga de datos hacia AWS Redshift
  - **Tag V2.1** Tercer entregable: Script de segunda entrega dentro de un contenedor de Docker y un DAG de Apache Airflow
  - **Tag V3.0** Cuarto entregable: Script de tercera entrega con DAG parametrizado y alerta por correo
+ - **Tag V4.0** Entrega final: Previas entregas limpias, codigo refactorizado y README completo
 
 ## Implementación
 
