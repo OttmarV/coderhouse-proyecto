@@ -44,6 +44,7 @@ credentials.py
 # Portable Network Graphics
 *.png
 !airflow.png
+!email.png
 
 # Animated Portable Network Graphics
 *.apng

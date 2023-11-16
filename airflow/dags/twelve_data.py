@@ -1,3 +1,6 @@
+"""Set up TwelveData DAG, this includes ETL, Threshold check and email alert if required"""
+
+
 from datetime import datetime, timedelta
 
 from airflow import DAG
@@ -9,6 +12,7 @@ from airflow.providers.amazon.aws.operators.redshift_sql import RedshiftSQLOpera
 
 from utils.functions import process_sql_result, send_email_smtp
 
+# Setting up DAG default args
 default_args = {
     "owner": "OttmarV",
     "retries": 0,
@@ -38,15 +42,17 @@ with DAG(
         "th_max": 150,
     },
 ) as dag:
-    # Defaults Tasks:
+    # Start Node, representative start
     start_dag = DummyOperator(task_id="start_dag")
 
+    # Execute ETL
     twelve_data_etl = BashOperator(
         task_id="twelve_data_etl",
         bash_command="python /src/main.py",
     )
 
     # For amazon provider version 7.4.1
+    # Execute threshold query
     compute_threshold = RedshiftSQLOperator(
         task_id="compute_threshold",
         sql="avg_threshold.sql",
@@ -55,6 +61,7 @@ with DAG(
         redshift_conn_id="redshift_default",
     )
 
+    # Process threshold query result and decides next node
     process_result = BranchPythonOperator(
         task_id="process_result",
         python_callable=process_sql_result,
@@ -62,6 +69,7 @@ with DAG(
         wait_for_downstream=True,
     )
 
+    # If threshold is not met, send email alert to user
     send_email = PythonOperator(
         task_id="send_email",
         python_callable=send_email_smtp,
@@ -69,12 +77,14 @@ with DAG(
         wait_for_downstream=True,
     )
 
+    # If threshold is met, end DAG
     end_dag = DummyOperator(
         task_id="end_dag",
         trigger_rule=TriggerRule.NONE_FAILED_OR_SKIPPED,
         wait_for_downstream=True,
     )
 
+    # DAG sequence including branching
     start_dag >> twelve_data_etl >> compute_threshold >> process_result >> end_dag
     (
         start_dag

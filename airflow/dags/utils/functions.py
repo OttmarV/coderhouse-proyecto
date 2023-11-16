@@ -1,3 +1,5 @@
+"""Utility functions to support main DAG"""
+
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -5,7 +7,12 @@ from email.mime.multipart import MIMEMultipart
 from airflow.models import Variable
 
 
-def process_sql_result(**kwargs):
+def process_sql_result(**kwargs: dict) -> str:
+    """Callable that pushes the results of DAG threshold query
+
+    Returns:
+        str: Next node in dag
+    """
     ti = kwargs["ti"]
     params = kwargs["params"]
     sql_result = float(ti.xcom_pull(task_ids="compute_threshold")[0][0])
@@ -18,7 +25,8 @@ def process_sql_result(**kwargs):
     return "end_dag"
 
 
-def send_email_smtp(ti, **kwargs):
+def send_email_smtp(ti, **kwargs: dict) -> None:
+    """Creates and sends email using smtplib library"""
     query_result = ti.xcom_pull(task_ids="process_result", key="threshold_value")
     params = kwargs["params"]
     stock = params.get("stock")
@@ -37,11 +45,11 @@ def send_email_smtp(ti, **kwargs):
             end_date=end_date,
         )
 
-    smtp_server = "smtp.office365.com"
-    smtp_port = 587
+    smtp_server = Variable.get("SMTP_HOST_EMAIL")
+    smtp_port = int(Variable.get("SMTP_PORT_EMAIL"))
     msg = MIMEMultipart()
-    msg["From"] = Variable.get("SECRET_EMAIL")
-    msg["To"] = Variable.get("SECRET_EMAIL")
+    msg["From"] = Variable.get("SECRET_SMTP_EMAIL")
+    msg["To"] = Variable.get("SECRET_SMTP_EMAIL")
     msg["Subject"] = "CODERHOUSE DAG TWELVE DATA THRESHOLD FAILURE"
     msg.attach(
         MIMEText(
@@ -51,6 +59,7 @@ def send_email_smtp(ti, **kwargs):
     )
     with smtplib.SMTP(smtp_server, smtp_port) as server:
         server.starttls()
-        server.login(Variable.get("SECRET_EMAIL"), Variable.get("SECRET_PWD_EMAIL"))
+        server.login(
+            Variable.get("SECRET_SMTP_EMAIL"), Variable.get("SECRET_SMTP_PWD_EMAIL")
+        )
         server.send_message(msg)
-    print("El email fue enviado correctamente.")

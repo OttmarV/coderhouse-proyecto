@@ -1,3 +1,6 @@
+"""Contains the ETL pipeline to follow for TwelveData extraction 
+"""
+
 import os
 import logging
 
@@ -14,6 +17,9 @@ TWELVE_DATA_API_KEY = os.environ.get("TWELVE_DATA_API_KEY")
 
 
 def main():
+    """ETL Pipeline encapsulated in a function for importing purposes"""
+
+    # Setup Logger
     logging.basicConfig(
         format="%(asctime)s %(levelname)-8s %(message)s",
         level=logging.INFO,
